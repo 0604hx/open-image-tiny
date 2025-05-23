@@ -1,0 +1,37 @@
+{
+    "name": "open-image-tiny",
+    "cnName": "开源图片压缩工具",
+    "version": "1.0.0",
+    "description": "基于 Electon、Vue3 的图片压缩/转换工具",
+    "main": "index.js",
+    "scripts": {
+        "dev": "rsbuild dev",
+        "client": "chcp 65001 && electron electron/main.js"
+    },
+    "keywords": [
+        "Electron",
+        "Vue3",
+        "Sharp.js",
+        "图片压缩",
+        "WebP",
+        "AVIF"
+    ],
+    "author": "集成显卡/0604hx",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/0604hx/open-image-tiny"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "naive-ui": "^2.41.0",
+        "pinia": "^3.0.2",
+        "pinia-plugin-persistedstate": "^4.3.0",
+        "vue": "^3.5.14"
+    },
+    "devDependencies": {
+        "@rsbuild/core": "^1.3.21",
+        "@rsbuild/plugin-vue": "^1.0.7",
+        "electron": "^36.3.1",
+        "electron-builder": "^26.0.12"
+    }
+}
