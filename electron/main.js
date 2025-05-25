@@ -1,5 +1,6 @@
 const { join } = require('node:path')
 const { app, protocol, BrowserWindow, Menu } = require('electron')
+const registerHandler = require('./handler')
 
 //不提示安全信息
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
@@ -54,10 +55,10 @@ async function createWindow() {
  */
 app.disableHardwareAcceleration()
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin'){
-        console.debug(`所有窗口均关闭，即将退出程序...`)
-        setTimeout(app.quit, 1000)
-    }
+    console.debug(`所有窗口均关闭，即将退出程序...`)
+    setTimeout(app.quit, 1000)
+    // if (process.platform !== 'darwin'){
+    // }
 })
 app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) restoreOrCreateWindow()})
 /**
@@ -66,6 +67,8 @@ app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) resto
 app.on('second-instance', restoreOrCreateWindow)
 
 app.whenReady().then(async ()=>{
+    registerHandler()
+
     restoreOrCreateWindow()
     console.debug(`程序启动完成，enjoy ^.^`)
 })

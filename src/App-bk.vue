@@ -5,11 +5,13 @@
             WebP 和 AVIF 是两种现代图像格式，目标都是减小文件大小、提升加载速度、同时保持较高画质。
         </n-alert>
 
-        <n-card hoverable style="cursor: pointer;" class="text-center">
-            <div style="margin-bottom: 12px"><n-icon size="48" :depth="3"> <ImagePlus /> </n-icon></div>
-            <n-text style="font-size: 16px">点击或者拖动文件到该区域来上传</n-text>
-            <n-p depth="3" style="margin: 8px 0 0 0">支持的格式 {{ exts.join("、") }}，最多 {{ max }} 张图片</n-p>
-        </n-card>
+        <n-upload multiple directory-dnd :max :default-upload="false" @update:file-list="onFileList" :accept>
+            <n-upload-dragger>
+                <div style="margin-bottom: 12px"><n-icon size="48" :depth="3"> <ImagePlus /> </n-icon></div>
+                <n-text style="font-size: 16px">点击或者拖动文件到该区域来上传</n-text>
+                <n-p depth="3" style="margin: 8px 0 0 0">支持的格式 {{ exts.join("、") }}，最多 {{ max }} 张图片</n-p>
+            </n-upload-dragger>
+        </n-upload>
 
         <n-form inline :show-feedback="false">
             <n-form-item label="转换为">
@@ -28,7 +30,7 @@
 
 <script setup>
     import { ref, reactive } from 'vue'
-    import { NCard, NSpace, NButton, NAlert, NUpload, NUploadDragger, NText, NP, NIcon, NForm, NFormItem, NSelect, NInputNumber, useMessage } from 'naive-ui'
+    import { NSpace, NButton, NAlert, NUpload, NUploadDragger, NText, NP, NIcon, NForm, NFormItem, NSelect, NInputNumber, useMessage } from 'naive-ui'
     import { ImagePlus, CirclePlay, Info } from 'lucide-vue-next'
 
     const max = 5

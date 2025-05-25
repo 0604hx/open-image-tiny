@@ -1,6 +1,8 @@
 import { createApp, h, render } from "vue"
 import { setupStore } from '@/store'
 
+import "./app.css"
+
 import App from './App.vue'
 import { NMessageProvider } from "naive-ui"
 

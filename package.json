@@ -5,8 +5,9 @@
     "description": "基于 Electon、Vue3 的图片压缩/转换工具",
     "main": "index.js",
     "scripts": {
-        "dev": "rsbuild dev",
-        "client": "chcp 65001 && electron electron/main.js"
+        "ui": "rsbuild dev",
+        "client": "electron electron/main.js",
+        "client:win": "chcp 65001 && electron electron/main.js"
     },
     "keywords": [
         "Electron",
@@ -23,9 +24,11 @@
     },
     "license": "MIT",
     "dependencies": {
+        "lucide-vue-next": "^0.511.0",
         "naive-ui": "^2.41.0",
         "pinia": "^3.0.2",
         "pinia-plugin-persistedstate": "^4.3.0",
+        "sharp": "^0.34.2",
         "vue": "^3.5.14"
     },
     "devDependencies": {
