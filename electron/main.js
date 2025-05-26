@@ -29,7 +29,7 @@ async function createWindow() {
 
     mainWindow = new BrowserWindow({
         width: 800,
-        height: app.isPackaged?920:1080,
+        height: app.isPackaged?720:1020,
         show: true,
         webPreferences:{
             webSecurity: false,

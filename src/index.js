@@ -1,3 +1,5 @@
+import dayjs from "dayjs"
+
 import { createApp, h, render } from "vue"
 import { setupStore } from '@/store'
 
@@ -15,6 +17,26 @@ const appWrapper = {
 const app = createApp(appWrapper)
 
 setupStore(app)
+
+app.config.globalProperties.filesize = (mem, fixed=0, split="")=>{
+    if(!mem)    return ""
+
+    var G = 0
+    var M = 0
+    var KB = 0
+    mem >= (1 << 30) && (G = (mem / (1 << 30)).toFixed(fixed))
+    mem >= (1 << 20) && (mem < (1 << 30)) && (M = (mem / (1 << 20)).toFixed(fixed))
+    mem >= (1 << 10) && (mem < (1 << 20)) && (KB = (mem / (1 << 10)).toFixed(fixed))
+    return G > 0
+        ? G + split + 'GB'
+        : M > 0
+            ? M + split + 'MB'
+            : KB > 0
+                ? KB + split + 'KB'
+                : mem + split + 'B'
+}
+app.config.globalProperties.datetime = (d=new Date(), format="YYYY-MM-DD HH:mm:ss")=>dayjs(d).format(format)
+
 
 app.mount("#root")
 
