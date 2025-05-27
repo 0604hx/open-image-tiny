@@ -9,8 +9,6 @@ protocol.registerSchemesAsPrivileged([ { scheme: 'app', privileges: { secure: tr
 /**@type {BrowserWindow} */
 let mainWindow  = null
 
-const url = !app.isPackaged?"http://localhost:4000":""
-
 /**
  * Restore existing BrowserWindow or Create new BrowserWindow
  */
@@ -38,7 +36,10 @@ async function createWindow() {
         }
     })
 
-    mainWindow.loadURL(url)
+    if(app.isPackaged)
+        mainWindow.loadFile(join(__dirname, "../dist/index.html"))
+    else
+        mainWindow.loadURL("http://localhost:4000")
 
     if(!app.isPackaged){
         // 开发模式下自动打开F12

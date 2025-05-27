@@ -9,16 +9,6 @@ const { statSync } = require('node:fs')
  * @property {Number} quality - 质量
  */
 
-/**
- *
- * @param {String} text
- * @param {Number} len
- * @returns {String}
- */
-exports.shotHash = (text, len=12)=>{
-    const hash = crypto.createHash('sha1').update(text).digest('base64')
-    return hash.replace(/[+/=]/g, '').slice(0, len)
-}
 
 /**
  * 转换图片格式
@@ -53,4 +43,15 @@ exports.convertFormat = async (origin, target, config)=>{
     }
 
     return { path: target, size: statSync(target).size, used: Date.now() - started }
+}
+
+/**
+ *
+ * @param {String} text
+ * @param {Number} len
+ * @returns {String}
+ */
+exports.shotHash = (text, len=12)=>{
+    const hash = crypto.createHash('sha1').update(text).digest('base64')
+    return hash.replace(/[+/=]/g, '').slice(0, len)
 }

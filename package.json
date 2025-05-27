@@ -1,13 +1,16 @@
 {
     "name": "open-image-tiny",
     "cnName": "开源图片压缩工具",
-    "version": "1.0.0",
+    "version": "25.5.28",
     "description": "基于 Electon、Vue3 的图片压缩/转换工具",
-    "main": "index.js",
+    "main": "electron/main.js",
     "scripts": {
         "ui": "rsbuild dev",
+        "ui:build": "rsbuild build",
         "client": "electron electron/main.js",
-        "client:win": "chcp 65001 && electron electron/main.js"
+        "client:win": "chcp 65001 && electron electron/main.js",
+        "package": "electron-builder --dir",
+        "package:7z": "electron-builder"
     },
     "keywords": [
         "Electron",
@@ -24,18 +27,44 @@
     },
     "license": "MIT",
     "dependencies": {
-        "dayjs": "^1.11.13",
-        "lucide-vue-next": "^0.511.0",
-        "naive-ui": "^2.41.0",
-        "pinia": "^3.0.2",
-        "pinia-plugin-persistedstate": "^4.3.0",
-        "sharp": "^0.34.2",
-        "vue": "^3.5.14"
+        "sharp": "^0.34.2"
     },
     "devDependencies": {
         "@rsbuild/core": "^1.3.21",
         "@rsbuild/plugin-vue": "^1.0.7",
+        "dayjs": "^1.11.13",
         "electron": "^36.3.1",
-        "electron-builder": "^26.0.12"
+        "electron-builder": "^26.0.12",
+        "lucide-vue-next": "^0.511.0",
+        "naive-ui": "^2.41.0",
+        "pinia": "^3.0.2",
+        "pinia-plugin-persistedstate": "^4.3.0",
+        "vue": "^3.5.15"
+    },
+    "build": {
+        "appId": "open-image-tiny",
+        "productName": "图片压缩工具",
+        "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
+        "copyright": "Copyright © 2009-2025 集成显卡",
+        "asar": true,
+        "compression": "maximum",
+        "asarUnpack": [
+        ],
+        "files": [
+            "dist/**/*",
+            "electron/**/*"
+        ],
+        "directories": {
+            "output": "build"
+        },
+        "win": {
+            "icon": "./public/logo.ico",
+            "target": [
+                {
+                    "target": "7z",
+                    "arch": ["x64"]
+                }
+            ]
+        }
     }
 }

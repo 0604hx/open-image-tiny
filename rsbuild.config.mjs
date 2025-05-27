@@ -30,6 +30,7 @@ export default defineConfig({
         host: "localhost"
     },
     output:{
+        assetPrefix:"./",
         cleanDistPath: true,
         distPath:{
             js:"js",
