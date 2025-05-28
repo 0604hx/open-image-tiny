@@ -7,6 +7,9 @@ const { statSync } = require('node:fs')
  * @typedef {Object} ConvertConfig - 转换格式
  * @property {String} target - 目标格式
  * @property {Number} quality - 质量
+ * @property {Number} rotate - 旋转角度
+ * @property {String} resize - 裁剪方式
+ * @property {Number} resizeValue - 裁剪值
  */
 
 
@@ -34,6 +37,12 @@ exports.convertFormat = async (origin, target, config)=>{
 
     let img = sharp(origin)
     try{
+        if(config.rotate != null && !isNaN(config.rotate))
+            img.rotate(config.rotate)
+        if(config.resize && !isNaN(config.resizeValue)){
+            let ps = { [config.resize]: config.resizeValue }
+            img.resize({ fit:'inside', ...ps })
+        }
         await img.toFormat(format, { quality: config.quality }).toFile(target)
     }catch(e){
         img.destroy()

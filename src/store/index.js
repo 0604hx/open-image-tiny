@@ -9,3 +9,5 @@ export function setupStore(app) {
 }
 
 export { store }
+
+export * from './configStore'

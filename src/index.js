@@ -6,11 +6,11 @@ import { setupStore } from '@/store'
 import "./app.css"
 
 import App from './App.vue'
-import { NMessageProvider } from "naive-ui"
+import { NConfigProvider, NMessageProvider } from "naive-ui"
 
 const appWrapper = {
     render(){
-        return h(NMessageProvider, { duration: 6000 }, ()=> h(App))
+        return h(NConfigProvider, ()=>h(NMessageProvider, { duration: 6000 }, ()=> h(App)))
     }
 }
 
@@ -18,7 +18,7 @@ const app = createApp(appWrapper)
 
 setupStore(app)
 
-app.config.globalProperties.filesize = (mem, fixed=0, split="")=>{
+app.config.globalProperties.filesize = window.filesize = (mem, fixed=0, split="")=>{
     if(!mem)    return ""
 
     var G = 0
@@ -35,7 +35,7 @@ app.config.globalProperties.filesize = (mem, fixed=0, split="")=>{
                 ? KB + split + 'KB'
                 : mem + split + 'B'
 }
-app.config.globalProperties.datetime = (d=new Date(), format="YYYY-MM-DD HH:mm:ss")=>dayjs(d).format(format)
+app.config.globalProperties.datetime = window.datetime = (d=new Date(), format="YYYY-MM-DD HH:mm:ss")=>dayjs(d).format(format)
 
 
 app.mount("#root")

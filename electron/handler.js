@@ -83,7 +83,6 @@ const handlers = {
      * @param {ConvertConfig} config
      */
     'convert': async (e, filePath, config)=>{
-        console.debug("开始转换", filePath, config)
         let result = await convertFormat(filePath, null, config)
         return result
     }
