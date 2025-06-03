@@ -6,6 +6,8 @@ import { setupStore } from '@/store'
 import "./app.css"
 
 import App from './App.vue'
+import Tag from "@/widget/tag.vue"
+
 import { NConfigProvider, NMessageProvider } from "naive-ui"
 
 const appWrapper = {
@@ -37,7 +39,7 @@ app.config.globalProperties.filesize = window.filesize = (mem, fixed=0, split=""
 }
 app.config.globalProperties.datetime = window.datetime = (d=new Date(), format="YYYY-MM-DD HH:mm:ss")=>dayjs(d).format(format)
 
-
+app.component("Tag", Tag)
 app.mount("#root")
 
 console.debug(

@@ -12,10 +12,12 @@ const buildVersion = ()=>{
 const version = isProduction? buildVersion() : 'DEV'
 
 export default defineConfig({
-    source:{
+    resolve:{
         alias:{
-            "@"             : "./src",
+            "@"                 : "./src",
         },
+    },
+    source:{
         define:{
             "_VERSION_"         : JSON.stringify(version),
             "_AUTHOR_"          : JSON.stringify(pkg.author),
@@ -23,7 +25,7 @@ export default defineConfig({
         }
     },
     html:{
-        title: pkg.cnName
+        title: `${pkg.cnName} · v${pkg.version}`
     },
     server:{
         port: 4000,

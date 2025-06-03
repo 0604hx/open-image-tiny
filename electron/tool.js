@@ -1,7 +1,10 @@
 const crypto = require('node:crypto')
 const sharp = require('sharp')
 const path = require('node:path')
-const { statSync } = require('node:fs')
+const { statSync, writeFileSync } = require('node:fs')
+const { PDFDocument } = require('pdf-lib')
+
+const PDF = "pdf"
 
 /**
  * @typedef {Object} ConvertConfig - 转换格式
@@ -11,6 +14,25 @@ const { statSync } = require('node:fs')
  * @property {String} resize - 裁剪方式
  * @property {Number} resizeValue - 裁剪值
  */
+
+
+/**
+ * 图片转换为PDF
+ * @param {sharp.Sharp} img
+ * @param {String} target
+ */
+const toPdf = async (img, target)=>{
+    const pdf = await PDFDocument.create()
+    const page = pdf.addPage()
+
+    const pdfImg = await pdf.embedJpg(await img.toBuffer())
+    const { width, height } = pdfImg.scale(1)
+    page.setSize(width, height)
+    page.drawImage(pdfImg, { x:0, y:0, width, height })
+
+    const pdfBytes = await pdf.save()
+    writeFileSync(target, pdfBytes)
+}
 
 
 /**
@@ -43,7 +65,12 @@ exports.convertFormat = async (origin, target, config)=>{
             let ps = { [config.resize]: config.resizeValue }
             img.resize({ fit:'inside', ...ps })
         }
-        await img.toFormat(format, { quality: config.quality }).toFile(target)
+
+        if(format == PDF)
+            await toPdf(img, target)
+        else
+            await img.toFormat(format, { quality: config.quality }).toFile(target)
+
     }catch(e){
         img.destroy()
         let fail = e.message ?? e

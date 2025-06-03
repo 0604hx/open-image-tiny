@@ -12,9 +12,6 @@
             </n-card>
         </n-space>
         <div style="flex: 1;padding-left: 12px; padding-right: 12px;">
-            <!-- <n-card title="已选图片" :size style="height: 500px; padding-left: 12px; padding-right: 12px;">
-                <ImageList :images />
-            </n-card> -->
             <n-data-table :size :columns :data="images" :bordered="false" flex-height style="height: 100%;">
                 <template #empty><n-text depth="3">暂未选择图片</n-text></template>
             </n-data-table>
@@ -45,6 +42,8 @@
             </div>
         </n-space>
     </div>
+
+    <ChangeLog />
 </template>
 
 <script setup>
@@ -57,15 +56,15 @@
 
     import { configStore } from '@/store'
 
-    import ImageList from '@/widget/images.vue'
     import Tip from '@/widget/tip.vue'
+    import ChangeLog from '@/widget/changelog.vue'
 
     const max = 20
     const align = "center"
     const size = "small"
     const exts = ["JPG", "PNG", "WEBP", "AVIF"]
     const accept = exts.map(v=>`.${v.toLocaleLowerCase()}`).join(",")
-    const options = exts.map(value=>({ value, label:value}))
+    const options = [...exts.map(value=>({ value, label:value })), { label:"生成 PDF", value:"PDF"}]
     const resizeOpts = [ {value:"", label:"无" }, { value:"width", label:"宽度"}, { value:"height", label:"高度" }]
     const message = useMessage()
     const style = { maxWidth: `${parseInt(window.innerWidth*0.8)}px` }
@@ -97,12 +96,13 @@
             render:(r, i)=>{
                 if(r.state==1)
                     return h(NSpin, { size: 18 })
-                //class="clickable" :size :component="Trash"  @click="()=>images.splice(index, 1)"/>
+
                 return h(NIcon, { class:'clickable', size, component:Trash, onClick:()=> images.value.splice(i, 1) })
             }
         }
     ]
 
+    const help = ref(false)
     const images = ref([])
     const transfer = configStore()
 
@@ -133,6 +133,7 @@
     }
 
     const start = ()=>{
+        help.value = true
         let imgs = images.value
         if(!imgs.length)    return message.warning(`请先选择图片`)
 
