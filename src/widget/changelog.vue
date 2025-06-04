@@ -5,6 +5,7 @@
                 <div class="version">25.6.5</div>
                 <ul>
                     <li>增加<Tag>PDF</Tag>转换格式（图片先转换为 <Tag>JPG</Tag> 再嵌入到文档）</li>
+                    <li>可查看相片的元数据（EXIF、XMP等）</li>
                 </ul>
 
                 <div class="version">25.5.28 <n-text class="tip" depth="3">首个版本</n-text></div>

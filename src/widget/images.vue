@@ -1,69 +1,77 @@
 <template>
-    <n-table v-if="images.length" size="small" :bordered :bottom-bordered="false" single-column striped>
-        <thead>
-            <tr>
-                <th>文件名</th>
-                <th width="50px">宽度</th>
-                <th width="50px">高度</th>
-                <th width="65px">原始大小</th>
-                <th width="65px">转换后</th>
-                <th width="50px">压缩率</th>
-                <th width="30px"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(img, index) in images">
-                <td>
-                    <n-tooltip placement="bottom" :style>
-                        <template #trigger>
-                            <span class="clickable" @click="open(img.path)">{{ img.name }}</span>
-                        </template>
-                        {{ img.path }}
-                    </n-tooltip>
-                </td>
-                <td>{{ img.width }}</td>
-                <td>{{ img.height }}</td>
-                <td>{{ filesize(img.size) }}</td>
-                <td> <span class="clickable" @click="open(img.output)">{{ filesize(img.sized) }}</span></td>
-                <td>
-                    <n-tooltip v-if="img.sized" placement="bottom" :style>
-                        <template #trigger><n-tag class="w-full" size="small" :bordered type="primary">{{ ratio(img) }}</n-tag></template>
-                        <div>
-                            <div><n-tag size="small" :bordered type="primary">路径</n-tag> {{img.output}}</div>
-                            <div><n-tag size="small" :bordered type="primary">耗时</n-tag> {{img.used}}毫秒</div>
-                        </div>
-                    </n-tooltip>
-                    <n-tooltip v-else-if="img.fail" :style placement="bottom">
-                        <template #trigger><n-tag class="w-full" size="small" :bordered type="error">失败</n-tag></template>
-                        {{ img.fail }}
-                    </n-tooltip>
-                </td>
-                <td class="text-center">
-                    <!-- <n-icon v-if="img.state==2"  class="clickable" :size color="#18a058" :component="CheckCircle" /> -->
-                    <n-spin v-if="img.state==1" :size />
-                    <n-icon v-else class="clickable" :size :component="Trash"  @click="()=>images.splice(index, 1)"/>
-                </td>
-            </tr>
-        </tbody>
-    </n-table>
-    <n-text v-else depth="3">暂未选择图片</n-text>
+    <n-data-table :size :columns :data="images" :bordered="false" flex-height style="height: 100%;">
+        <template #empty><n-text depth="3">暂未选择图片</n-text></template>
+    </n-data-table>
 </template>
 
 <script setup>
-    import { NTable, NIcon, NText, NSpin, NTooltip, NTag } from 'naive-ui'
-    import { Trash, CheckCircle } from 'lucide-vue-next'
+    import { h } from 'vue'
+    import { NDataTable, NIcon, NText, NSpin, NTooltip, NTag, NFlex, useMessage, useDialog } from 'naive-ui'
+    import { Trash, Database } from 'lucide-vue-next'
 
+    import Tip from '@/widget/tip.vue'
+    import Exif from './exif.vue'
+
+    const align = "center"
     const size = 18
     const bordered = false
     const style = { maxWidth: `${parseInt(window.innerWidth*0.8)}px` }
+    const message = useMessage()
+    const dialog = useDialog()
 
     const props = defineProps({
         images:{type:Array, default:[]},    //图片清单
     })
 
-    const ratio = img=>{
-        if(!(img.size && img.sized))    return ""
-        return ((1-img.sized/img.size)*100).toFixed(2) + "%"
-    }
+    const columns = [
+        { title:"#", width:40, align, render:(r,i)=>i+1 },
+        { title:"文件名", key:"name", render:r=>h('span', { class:'clickable', onClick:()=>open(r.path) }, r.name ) },
+        { title:"宽度", key:"width", width:60 },
+        { title:"宽度", key:"height", width:60 },
+        { title:"原始大小", key:"size", width:80, render:r=> filesize(r.size) },
+        { title:"转换后", key:"sized", width:80, render:r=> h('span', { class:'clickable', onClick:()=>open(r.output) }, filesize(r.sized)) },
+        {
+            title:"压缩率", width:80,
+            render:img=>{
+                if(!(img.size && img.sized))
+                    return null
+
+                let fail = !!img.fail
+                let r = fail? null : (1-img.sized/img.size)*100
+
+                return h(NTooltip, { placement:"bottom", style }, {
+                    trigger: ()=> h(NTag, { bordered:false, size, type:fail?'error':(r>0?'success':'warning') }, img.fail?"失败":(r.toFixed(2)+"%")),
+                    default: ()=> h(Tip, { img })
+                })
+            }
+        },
+        {
+            title:"", width: 70, align,
+            render:(r, i)=>{
+                if(r.state==1)
+                    return h(NSpin, { size: 18 })
+
+                return h(NFlex, [
+                    h(NIcon, { class:'clickable', size, component:Database, title:`查看元数据`, onClick:()=> showDetail(r) }),
+                    h(NIcon, { class:'clickable', size, component:Trash, title:`移除`, onClick:()=> images.value.splice(i, 1) })
+                ])
+            }
+        }
+    ]
+
     const open = path=> path && H.open(path)
+    const showDetail = img=>{
+        H.getEXIF(img.path).then(data=>{
+            if(!data)  return message.info(`读取不到 ⌈${img.name}⌋ 的元数据`)
+
+            const height = window.innerHeight - 100
+            const width = window.innerWidth<720?window.innerWidth:720
+            dialog.create({
+                title:`⌈${img.name}⌋ 的元数据`,
+                showIcon:false,
+                style:{width:`${width}px`, height:`${height}px` },
+                content: ()=>h(Exif, { data, height: `${height-80}px` })
+            })
+        })
+    }
 </script>

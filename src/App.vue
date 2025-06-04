@@ -12,9 +12,7 @@
             </n-card>
         </n-space>
         <div style="flex: 1;padding-left: 12px; padding-right: 12px;">
-            <n-data-table :size :columns :data="images" :bordered="false" flex-height style="height: 100%;">
-                <template #empty><n-text depth="3">暂未选择图片</n-text></template>
-            </n-data-table>
+            <ImageList :size :images />
         </div>
         <n-space vertical style="padding:12px;">
             <n-card :size>
@@ -56,53 +54,17 @@
 
     import { configStore } from '@/store'
 
-    import Tip from '@/widget/tip.vue'
+    import ImageList from '@/widget/images.vue'
     import ChangeLog from '@/widget/changelog.vue'
 
     const max = 20
-    const align = "center"
     const size = "small"
     const exts = ["JPG", "PNG", "WEBP", "AVIF"]
     const accept = exts.map(v=>`.${v.toLocaleLowerCase()}`).join(",")
     const options = [...exts.map(value=>({ value, label:value })), { label:"生成 PDF", value:"PDF"}]
     const resizeOpts = [ {value:"", label:"无" }, { value:"width", label:"宽度"}, { value:"height", label:"高度" }]
     const message = useMessage()
-    const style = { maxWidth: `${parseInt(window.innerWidth*0.8)}px` }
 
-    const columns = [
-        { title:"#", width:40, align, render:(r,i)=>i+1 },
-        { title:"文件名", key:"name" },
-        { title:"宽度", key:"width", width:60 },
-        { title:"宽度", key:"height", width:60 },
-        { title:"原始大小", key:"size", width:80, render:r=> filesize(r.size) },
-        { title:"转换后", key:"sized", width:80, render:r=> filesize(r.sized) },
-        {
-            title:"压缩率", width:80,
-            render:img=>{
-                if(!(img.size && img.sized))
-                    return null
-
-                let fail = !!img.fail
-                let r = fail? null : (1-img.sized/img.size)*100
-
-                return h(NTooltip, { placement:"bottom", style }, {
-                    trigger: ()=> h(NTag, { bordered:false, size, type:fail?'error':(r>0?'success':'warning') }, img.fail?"失败":(r.toFixed(2)+"%")),
-                    default: ()=> h(Tip, { img })
-                })
-            }
-        },
-        {
-            title:"", width: 40,
-            render:(r, i)=>{
-                if(r.state==1)
-                    return h(NSpin, { size: 18 })
-
-                return h(NIcon, { class:'clickable', size, component:Trash, onClick:()=> images.value.splice(i, 1) })
-            }
-        }
-    ]
-
-    const help = ref(false)
     const images = ref([])
     const transfer = configStore()
 
@@ -133,7 +95,6 @@
     }
 
     const start = ()=>{
-        help.value = true
         let imgs = images.value
         if(!imgs.length)    return message.warning(`请先选择图片`)
 

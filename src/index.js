@@ -8,11 +8,11 @@ import "./app.css"
 import App from './App.vue'
 import Tag from "@/widget/tag.vue"
 
-import { NConfigProvider, NMessageProvider } from "naive-ui"
+import { NConfigProvider, NMessageProvider, NDialogProvider } from "naive-ui"
 
 const appWrapper = {
     render(){
-        return h(NConfigProvider, ()=>h(NMessageProvider, { duration: 6000 }, ()=> h(App)))
+        return h(NConfigProvider, ()=>h(NDialogProvider, ()=>h(NMessageProvider, { duration: 6000 }, ()=> h(App))))
     }
 }
 

@@ -3,6 +3,8 @@ const sharp = require('sharp')
 const path = require('node:path')
 const { statSync, writeFileSync } = require('node:fs')
 const { PDFDocument } = require('pdf-lib')
+const exifr = require('exifr')
+const { imageSizeFromFile } = require('image-size/fromFile')
 
 const PDF = "pdf"
 
@@ -91,3 +93,35 @@ exports.shotHash = (text, len=12)=>{
     const hash = crypto.createHash('sha1').update(text).digest('base64')
     return hash.replace(/[+/=]/g, '').slice(0, len)
 }
+
+/**
+ * 读取指定图片的元数据
+ * @param {String} file
+ * @returns {Promise<Object>}
+ */
+exports.readExif = async file => await exifr.parse(file, { xmp: true })
+
+/**
+ * 使用 image-size 库读取图片宽高值
+ * @param {String} file
+ * @returns {Object}
+ */
+exports.readImgSize = async file=> {
+    const result = await imageSizeFromFile(file)
+    return { width: result.width, height: result.height, format: result.type }
+}
+
+/**
+ * 读取指定图片的分辨率，经测试，读取 webp 格式的原图时，会造成资源被占用（程序关闭前，无法在资源管理器内删除）
+ * @param {String} path
+ * @returns
+ */
+// exports.readImgSizeWithSharp = async path=>{
+//     const image = sharp(path)
+//     try {
+//         const { width, height, format } = await image.metadata()
+//         return { width, height, format }
+//     } finally {
+//         image.destroy()
+//     }
+// }
