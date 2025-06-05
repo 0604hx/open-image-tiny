@@ -40,7 +40,7 @@
                 let r = fail? null : (1-img.sized/img.size)*100
 
                 return h(NTooltip, { placement:"bottom", style }, {
-                    trigger: ()=> h(NTag, { bordered:false, size, type:fail?'error':(r>0?'success':'warning') }, img.fail?"失败":(r.toFixed(2)+"%")),
+                    trigger: ()=> h(NTag, { bordered:false, size:"small", type:fail?'error':(r>0?'success':'warning') }, img.fail?"失败":(r.toFixed(2)+"%")),
                     default: ()=> h(Tip, { img })
                 })
             }

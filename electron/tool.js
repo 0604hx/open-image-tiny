@@ -15,6 +15,7 @@ const PDF = "pdf"
  * @property {Number} rotate - 旋转角度
  * @property {String} resize - 裁剪方式
  * @property {Number} resizeValue - 裁剪值
+ * @property {String} dir - 存放目录
  */
 
 
@@ -54,7 +55,7 @@ exports.convertFormat = async (origin, target, config)=>{
     }
 
     if(!target){
-        const dir = path.dirname(origin)
+        const dir = config.dir || path.dirname(origin)
         const base = path.basename(origin, ext)
         target = path.join(dir, `${base}.${format}`)
     }

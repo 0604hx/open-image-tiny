@@ -6,7 +6,8 @@ export const configStore = defineStore('config', {
         quality: 80,
         resize: "",
         resizeValue: null,
-        rotate: null
+        rotate: null,
+        dir: null
     }),
     actions: {
     },

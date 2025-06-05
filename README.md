@@ -9,3 +9,17 @@
 **📷程序截图**
 
 ![](./docs/imgs/home.png)
+
+## 二次开发
+
+### 打包构建
+
+```shell
+# 打包前端（rsbuild）到 dist 目录
+pnpm ui:build
+
+# 构建客户端到 build 目录
+pnpm package
+```
+
+如果碰到诸如`⨯ ENOENT: no such file or directory, stat`，提示 node_modules 下没有相应目录的错误，可以通过删除`node_modules`目录重新安装依赖解决😂

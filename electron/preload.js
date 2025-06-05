@@ -7,5 +7,7 @@ contextBridge.exposeInMainWorld("H", {
 
     convert: (path, config)=> ipcRenderer.invoke('convert', path, config),
 
-    getEXIF: path=> ipcRenderer.invoke('exif', path)
+    getEXIF: path=> ipcRenderer.invoke('exif', path),
+
+    selectDir: ()=> ipcRenderer.invoke("select-dir")
 })

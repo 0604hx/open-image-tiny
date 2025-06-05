@@ -61,6 +61,11 @@ const handlers = {
         return files ? await readImgsInfo(files): []
     },
 
+    'select-dir': async (e)=> dialog.showOpenDialogSync({
+        title: '选择目录',
+        properties: ['createDirectory', 'openDirectory' ]
+    }),
+
     /**
      *
      * @param {Electron.IpcMainInvokeEvent} e

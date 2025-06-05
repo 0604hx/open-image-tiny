@@ -33,6 +33,19 @@
                         <n-input-number class="cell" :min="-360" :step="10" :max="360" v-model:value="transfer.rotate" placeholder="0~360度" />
                     </n-form-item>
                 </n-form>
+                <n-form :show-feedback="false" class="mt-2">
+                    <n-form-item label="存放目录">
+                        <n-input v-model:value="transfer.dir" clearable readonly placeholder="默认在文件同目录">
+                            <template #suffix>
+                                <n-button size="small" @click="selectDir" type="primary" secondary>选择目录</n-button>
+                            </template>
+                        </n-input>
+                        <!-- <n-input-group>
+                            <n-input v-model:value="transfer.dir" readonly placeholder="默认在文件同目录" />
+                            <n-button :style="{ width:'80px'}" type="primary" secondary>选择目录</n-button>
+                        </n-input-group> -->
+                    </n-form-item>
+                </n-form>
             </n-card>
 
             <div class="text-center">
@@ -47,7 +60,7 @@
 <script setup>
     import { ref, reactive, toRaw, h } from 'vue'
     import {
-        NCard, NSpace, NButton, NInputGroup, NAlert, NUpload, NDataTable, NUploadDragger, NTooltip, NText, NTag,
+        NCard, NSpace, NButton, NInput, NInputGroup, NAlert, NUpload, NDataTable, NUploadDragger, NTooltip, NText, NTag,
         NP, NIcon, NForm, NFormItem, NSelect, NInputNumber, useMessage, NSpin
     } from 'naive-ui'
     import { ImagePlus, Trash, CirclePlay, Info } from 'lucide-vue-next'
@@ -67,6 +80,11 @@
 
     const images = ref([])
     const transfer = configStore()
+
+    const selectDir = ()=> H.selectDir().then(dir=>{
+        console.debug(`选择目录：`, dir)
+        transfer.dir = Array.isArray(dir)?dir[0]:dir
+    })
 
     const toSelect = ()=> {
         if(!(window.H && window.H.selectFiles))
