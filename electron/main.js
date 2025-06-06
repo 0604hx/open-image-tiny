@@ -1,10 +1,23 @@
 const { join } = require('node:path')
-const { app, protocol, BrowserWindow, Menu } = require('electron')
+const { app, protocol, BrowserWindow, Menu, globalShortcut } = require('electron')
 const registerHandler = require('./handler')
 
 //不提示安全信息
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 protocol.registerSchemesAsPrivileged([ { scheme: 'app', privileges: { secure: true, standard: true } } ])
+
+const initKeyShortcut = ()=>{
+    /**
+     * 快速打开开发者面板
+     */
+    globalShortcut.register('CommandOrControl+F12', () => {
+        let curWin = BrowserWindow.getFocusedWindow()
+        if(curWin != null){
+            curWin.webContents.isDevToolsOpened() ? curWin.webContents.closeDevTools() : curWin.webContents.openDevTools()
+            console.debug(`用户按下 CTRL+F12 快捷键...`)
+        }
+    })
+}
 
 /**@type {BrowserWindow} */
 let mainWindow  = null
@@ -71,5 +84,8 @@ app.whenReady().then(async ()=>{
     registerHandler()
 
     restoreOrCreateWindow()
+
+    initKeyShortcut()
+
     console.debug(`程序启动完成，enjoy ^.^`)
 })

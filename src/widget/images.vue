@@ -12,6 +12,7 @@
     import Tip from '@/widget/tip.vue'
     import Exif from './exif.vue'
 
+    const title = "点击可查看图片"
     const align = "center"
     const size = 18
     const bordered = false
@@ -25,11 +26,11 @@
 
     const columns = [
         { title:"#", width:40, align, render:(r,i)=>i+1 },
-        { title:"文件名", key:"name", render:r=>h('span', { class:'clickable', onClick:()=>open(r.path) }, r.name ) },
+        { title:"文件名", key:"name", render:r=>h('span', { class:'clickable', title, onClick:()=>open(r.path) }, r.name ) },
         { title:"宽度", key:"width", width:60 },
         { title:"宽度", key:"height", width:60 },
         { title:"原始大小", key:"size", width:80, render:r=> filesize(r.size) },
-        { title:"转换后", key:"sized", width:80, render:r=> h('span', { class:'clickable', onClick:()=>open(r.output) }, filesize(r.sized)) },
+        { title:"转换后", key:"sized", width:80, render:r=> h('span', { class:'clickable', title, onClick:()=>open(r.output) }, filesize(r.sized)) },
         {
             title:"压缩率", width:80,
             render:img=>{

@@ -2,7 +2,7 @@
     <n-drawer v-model:show="help" width="90%">
         <n-drawer-content title="🎉 变更日志" :closable="true" :body-content-style="{padding:'0px 24px'}">
             <div class="changelog">
-                <div class="version">25.6.5</div>
+                <div class="version">25.6.6</div>
                 <ul>
                     <li>增加<Tag>PDF</Tag>转换格式（图片先转换为 <Tag>JPG</Tag> 再嵌入到文档）</li>
                     <li>可查看相片的元数据（EXIF、XMP等）</li>

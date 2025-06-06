@@ -7,6 +7,7 @@ const exifr = require('exifr')
 const { imageSizeFromFile } = require('image-size/fromFile')
 
 const PDF = "pdf"
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 /**
  * @typedef {Object} ConvertConfig - 转换格式
@@ -37,6 +38,29 @@ const toPdf = async (img, target)=>{
     writeFileSync(target, pdfBytes)
 }
 
+/**
+ *
+ * @param {String} text
+ * @param {Number} len
+ * @returns {String}
+ */
+exports.shotHash = (text, len=12)=>{
+    const hash = crypto.createHash('sha1').update(text).digest('base64')
+    return hash.replace(/[+/=]/g, '').slice(0, len)
+}
+
+/**
+ *
+ * @param {Number} length
+ * @returns
+ */
+exports.randomAlphaNum =  (length = 3)=>{
+    let result = ''
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    return result
+}
 
 /**
  * 转换图片格式
@@ -49,15 +73,20 @@ exports.convertFormat = async (origin, target, config)=>{
     const format = config.target.toLowerCase()
     const ext = path.extname(origin)
 
-    if(`.${format}` == ext.toLowerCase()){
-        console.debug(`${origin} 已经是 ${format} 格式，无需转换...`)
-        return
-    }
+    // if(`.${format}` == ext.toLowerCase()){
+    //     console.debug(`${origin} 已经是 ${format} 格式，无需转换...`)
+    //     return
+    // }
 
     if(!target){
         const dir = config.dir || path.dirname(origin)
         const base = path.basename(origin, ext)
         target = path.join(dir, `${base}.${format}`)
+        // 判断是否文件同名
+        if(target == origin){
+            console.debug(`检测到源文件与目标文件一致，生成随机后缀...`)
+            target = path.join(dir, `${base}_${this.randomAlphaNum()}.${format}`)
+        }
     }
 
     let img = sharp(origin)
@@ -84,16 +113,6 @@ exports.convertFormat = async (origin, target, config)=>{
     return { path: target, size: statSync(target).size, used: Date.now() - started }
 }
 
-/**
- *
- * @param {String} text
- * @param {Number} len
- * @returns {String}
- */
-exports.shotHash = (text, len=12)=>{
-    const hash = crypto.createHash('sha1').update(text).digest('base64')
-    return hash.replace(/[+/=]/g, '').slice(0, len)
-}
 
 /**
  * 读取指定图片的元数据

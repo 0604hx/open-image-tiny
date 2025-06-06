@@ -9,5 +9,13 @@ contextBridge.exposeInMainWorld("H", {
 
     getEXIF: path=> ipcRenderer.invoke('exif', path),
 
-    selectDir: ()=> ipcRenderer.invoke("select-dir")
+    selectDir: ()=> ipcRenderer.invoke("select-dir"),
+
+    /**
+     * 通用方法
+     * @param {String} name
+     * @param  {...any} ps
+     * @returns
+     */
+    action: (name, ...ps)=> ipcRenderer.invoke(name, ...ps)
 })
