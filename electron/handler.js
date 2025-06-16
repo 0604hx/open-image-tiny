@@ -2,7 +2,7 @@ const { app, ipcMain, dialog, shell } = require("electron")
 const { statSync } = require('node:fs')
 const { basename } = require('node:path')
 const sharp = require("sharp")
-const { shotHash, convertFormat, readImgSize, readExif } = require("./tool")
+const { shotHash, convertFormat, readImgSize, readExif, splitImageVertical } = require("./tool")
 
 const isDev = !app.isPackaged
 
@@ -70,7 +70,7 @@ const handlers = {
      *
      * @param {Electron.IpcMainInvokeEvent} e
      * @param {String} filePath
-     * @param {ConvertConfig} config
+     * @param {import("./tool").ConvertConfig} config
      */
     'convert': async (e, filePath, config)=>{
         let result = await convertFormat(filePath, null, config)
@@ -82,7 +82,16 @@ const handlers = {
      * @param {String} path
      * @returns {Object}
      */
-    'exif': async (e, path)=> await readExif(path)
+    'exif': async (e, path)=> await readExif(path),
+
+    /**
+     *
+     * @param {Electron.IpcMainInvokeEvent} e
+     * @param {String} filePath
+     * @param {import("./tool").SplitConfig} config
+     * @returns {Object}
+     */
+    'split': async (e, filePath, config)=> await splitImageVertical(filePath, config)
 }
 
 module.exports = ()=>{

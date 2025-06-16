@@ -5,6 +5,8 @@
 
 * [需求思考及桌面应用开发技术选型](https://blog.csdn.net/ssrc0604hx/article/details/148117181)
 * [Electron+Vue3+Rsbuild开发桌面应用](https://blog.csdn.net/ssrc0604hx/article/details/148164531)
+* [图片生成PDF文档](https://blog.csdn.net/ssrc0604hx/article/details/148425044)
+* [图片属性详解及读取解析元数据](https://blog.csdn.net/ssrc0604hx/article/details/148427409)
 
 **📷程序截图**
 

@@ -2,6 +2,12 @@
     <n-drawer v-model:show="help" width="90%">
         <n-drawer-content title="🎉 变更日志" :closable="true" :body-content-style="{padding:'0px 24px'}">
             <div class="changelog">
+                <div class="version">25.6.20</div>
+                <ul>
+                    <li>新增<Tag>垂直切割</Tag>功能</li>
+                    <li>支持<Tag>命令行</Tag>方式调用</li>
+                </ul>
+
                 <div class="version">25.6.6</div>
                 <ul>
                     <li>增加<Tag>PDF</Tag>转换格式（图片先转换为 <Tag>JPG</Tag> 再嵌入到文档）</li>
@@ -29,8 +35,6 @@
 </template>
 
 <script setup>
-    import { ref } from 'vue'
-    import { NElement, NText, NSpace, NButton, NDrawer, NDrawerContent, NIcon, NTooltip } from 'naive-ui'
     import { Info } from 'lucide-vue-next'
 
     const help = ref(false)

@@ -1,6 +1,10 @@
 import { defineConfig } from "@rsbuild/core"
 import { pluginVue } from "@rsbuild/plugin-vue"
 
+import AutoImport from 'unplugin-auto-import/rspack'
+import Components from 'unplugin-vue-components/rspack'
+import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
+
 import pkg from './package.json'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -45,6 +49,11 @@ export default defineConfig({
     ],
     tools:{
         rspack:{
+            plugins: [
+                AutoImport({ imports:['vue', 'vue-router'], dts: false }),
+                //按需导入 naive-ui
+                Components({ resolvers: [NaiveUiResolver()] })
+            ]
         }
     }
 })

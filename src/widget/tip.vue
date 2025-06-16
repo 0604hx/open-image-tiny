@@ -7,8 +7,6 @@
 </template>
 
 <script setup>
-    import { NTag } from 'naive-ui'
-
     const props = defineProps({
         img:{type:Object}
     })

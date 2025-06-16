@@ -1,7 +1,7 @@
 const crypto = require('node:crypto')
 const sharp = require('sharp')
 const path = require('node:path')
-const { statSync, writeFileSync } = require('node:fs')
+const { statSync, writeFileSync, existsSync, mkdirSync } = require('node:fs')
 const { PDFDocument } = require('pdf-lib')
 const exifr = require('exifr')
 const { imageSizeFromFile } = require('image-size/fromFile')
@@ -17,6 +17,12 @@ const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
  * @property {String} resize - 裁剪方式
  * @property {Number} resizeValue - 裁剪值
  * @property {String} dir - 存放目录
+ *
+ * @typedef {Object} ImageSize - 图片尺寸
+ * @property {Number} width - 宽度
+ * @property {Number} height - 高度
+ * @property {String} format - 格式
+ *
  */
 
 
@@ -113,7 +119,6 @@ exports.convertFormat = async (origin, target, config)=>{
     return { path: target, size: statSync(target).size, used: Date.now() - started }
 }
 
-
 /**
  * 读取指定图片的元数据
  * @param {String} file
@@ -121,10 +126,11 @@ exports.convertFormat = async (origin, target, config)=>{
  */
 exports.readExif = async file => await exifr.parse(file, { xmp: true })
 
+
 /**
  * 使用 image-size 库读取图片宽高值
  * @param {String} file
- * @returns {Object}
+ * @returns {ImageSize}
  */
 exports.readImgSize = async file=> {
     const result = await imageSizeFromFile(file)
@@ -145,3 +151,51 @@ exports.readImgSize = async file=> {
 //         image.destroy()
 //     }
 // }
+
+/**
+ * @typedef {Object} SplitConfig - 切割配置
+ * @property {Number} height - 高度
+ * @property {Boolean} fit - 是否自动填充
+ * @property {String} bgColor - 填充颜色
+ *
+ * 垂直切割图片
+ *
+ * @param {String} origin - 原图片
+ * @param {SplitConfig} config - 配置
+ */
+exports.splitImageVertical = async (origin, config)=>{
+    const { width, height } = await this.readImgSize(origin)
+    config.fit ??= true
+
+    const ext = path.extname(origin)
+    const count = Math.ceil(height / config.height)
+
+    const outputDir = path.join(path.dirname(origin), `${path.basename(origin, ext)}-${config.height}px`)
+    if(!existsSync(outputDir))
+        mkdirSync(outputDir)
+
+    const image = sharp(origin)
+
+    let fileCount = 0
+    let started = Date.now()
+
+    for(let i=0;i<count;i++){
+        const top = i * config.height
+        const curHeight = Math.min(config.height, height - top)
+
+        let chunk = image.clone().extract({ left:0, top, width, height: curHeight })
+
+        //自动填充白色背景
+        if(config.fit === true && config.height > curHeight){
+            chunk = chunk.extend({ top:0, bottom: config.height - curHeight, left:0, right:0, background: config.bgColor||"#ffffff" })
+        }
+
+        let outFile = path.join(outputDir, `切割-${i+1}${ext}`)
+        await chunk.toFile(outFile)
+        console.debug(`切割图片 > ${outFile}`)
+
+        fileCount ++
+    }
+
+    return { total:fileCount, dir: outputDir, used: Date.now() - started }
+}

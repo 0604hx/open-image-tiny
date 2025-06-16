@@ -5,8 +5,6 @@
 </template>
 
 <script setup>
-    import { NTag } from 'naive-ui'
-
     const props = defineProps({
         type:{type:String, default:"primary"},
         size:{type:String, default:"small"},

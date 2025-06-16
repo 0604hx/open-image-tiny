@@ -1,15 +1,15 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("H", {
-    open: path=> ipcRenderer.invoke('open', path),
+    // open: path=> ipcRenderer.invoke('open', path),
 
-    selectFiles: (accept)=> ipcRenderer.invoke("select-files", accept),
+    // selectFiles: (accept)=> ipcRenderer.invoke("select-files", accept),
 
-    convert: (path, config)=> ipcRenderer.invoke('convert', path, config),
+    // convert: (path, config)=> ipcRenderer.invoke('convert', path, config),
 
-    getEXIF: path=> ipcRenderer.invoke('exif', path),
+    // getEXIF: path=> ipcRenderer.invoke('exif', path),
 
-    selectDir: ()=> ipcRenderer.invoke("select-dir"),
+    // selectDir: ()=> ipcRenderer.invoke("select-dir"),
 
     /**
      * 通用方法

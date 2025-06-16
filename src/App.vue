@@ -58,11 +58,7 @@
 </template>
 
 <script setup>
-    import { ref, reactive, toRaw, h } from 'vue'
-    import {
-        NCard, NSpace, NButton, NInput, NInputGroup, NAlert, NUpload, NDataTable, NUploadDragger, NTooltip, NText, NTag,
-        NP, NIcon, NForm, NFormItem, NSelect, NInputNumber, useMessage, NSpin
-    } from 'naive-ui'
+    import { useMessage, useDialog } from 'naive-ui'
     import { ImagePlus, Trash, CirclePlay, Info } from 'lucide-vue-next'
 
     import { configStore } from '@/store'
@@ -77,23 +73,24 @@
     const options = [...exts.map(value=>({ value, label:value })), { label:"生成 PDF", value:"PDF"}]
     const resizeOpts = [ {value:"", label:"无" }, { value:"width", label:"宽度"}, { value:"height", label:"高度" }]
     const message = useMessage()
+    const dialog = useDialog()
 
     const images = ref([])
     const transfer = configStore()
 
-    const selectDir = ()=> H.selectDir().then(dir=>{
+    const selectDir = ()=> H.action('select-dir').then(dir=>{
         console.debug(`选择目录：`, dir)
         transfer.dir = Array.isArray(dir)?dir[0]:dir
     })
 
     const toSelect = ()=> {
-        if(!(window.H && window.H.selectFiles))
+        if(!(window.H && window.H.action))
             return message.error(`请在客户端内运行`)
 
         if(images.value.length >= max)
             return message.warning(`批量处理上限${max}个图片`)
 
-        H.selectFiles(exts).then(files=>{
+        H.action('select-files', exts).then(files=>{
             if(Array.isArray(files)){
                 /**@type {Array<Object>} */
                 let imgs = images.value
@@ -120,7 +117,7 @@
             let img = imgs[i]
             img.state = 1
 
-            H.convert(img.path, toRaw(transfer.$state))
+            H.action('convert', img.path, toRaw(transfer.$state))
                 .then(d=>{
                     console.debug("处理结果", d)
                     if(d && !!d.size){
@@ -136,4 +133,15 @@
                 })
         }
     }
+
+    onMounted(() => {
+        //注册全局消息提醒对象
+        window.M = {
+            ok      : msg=> message.success(msg),
+            info    : msg=> message.info(msg),
+            warn    : msg=> message.warning(msg),
+            error   : msg=> message.error(msg),
+            dialog  : opts=>dialog.create(opts)
+        }
+    })
 </script>

@@ -82,9 +82,7 @@ app.on('second-instance', restoreOrCreateWindow)
 
 app.whenReady().then(async ()=>{
     registerHandler()
-
     restoreOrCreateWindow()
-
     initKeyShortcut()
 
     console.debug(`程序启动完成，enjoy ^.^`)

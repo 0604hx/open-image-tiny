@@ -5,20 +5,18 @@
 </template>
 
 <script setup>
-    import { h } from 'vue'
-    import { NDataTable, NIcon, NText, NSpin, NTooltip, NTag, NFlex, useMessage, useDialog } from 'naive-ui'
-    import { Trash, Database } from 'lucide-vue-next'
+    import { NFlex, NIcon, NPopover } from 'naive-ui'
+    import { Trash, Database, SquareSplitVertical } from 'lucide-vue-next'
 
     import Tip from '@/widget/tip.vue'
     import Exif from './exif.vue'
+    import Split from './split.vue'
 
     const title = "点击可查看图片"
     const align = "center"
     const size = 18
     const bordered = false
     const style = { maxWidth: `${parseInt(window.innerWidth*0.8)}px` }
-    const message = useMessage()
-    const dialog = useDialog()
 
     const props = defineProps({
         images:{type:Array, default:[]},    //图片清单
@@ -26,7 +24,7 @@
 
     const columns = [
         { title:"#", width:40, align, render:(r,i)=>i+1 },
-        { title:"文件名", key:"name", render:r=>h('span', { class:'clickable', title, onClick:()=>open(r.path) }, r.name ) },
+        { title:"文件名", key:"name", ellipsis: { tooltip: true }, render:r=>h('span', { class:'clickable', onClick:()=>open(r.path) }, r.name ) },
         { title:"宽度", key:"width", width:60 },
         { title:"宽度", key:"height", width:60 },
         { title:"原始大小", key:"size", width:80, render:r=> filesize(r.size) },
@@ -47,30 +45,34 @@
             }
         },
         {
-            title:"", width: 70, align,
+            title:"", width: 100, align,
             render:(r, i)=>{
                 if(r.state==1)
                     return h(NSpin, { size: 18 })
 
                 return h(NFlex, [
                     h(NIcon, { class:'clickable', size, component:Database, title:`查看元数据`, onClick:()=> showDetail(r) }),
-                    h(NIcon, { class:'clickable', size, component:Trash, title:`移除`, onClick:()=> images.value.splice(i, 1) })
+                    h(NPopover, { placement:"bottom", trigger:"click" }, {
+                        trigger: ()=>h(NIcon, { class:'clickable', size, component:SquareSplitVertical, title:`垂直切割图片`}),
+                        default: ()=>h(Split, { img:r })
+                    }),
+                    h(NIcon, { class:'clickable', size, component:Trash, title:`移除`, onClick:()=> props.images.splice(i, 1) })
                 ])
             }
         }
     ]
 
-    const open = path=> path && H.open(path)
+    const open = path=> path && H.action('open', path)
     const showDetail = img=>{
-        H.getEXIF(img.path).then(data=>{
-            if(!data)  return message.info(`读取不到 ⌈${img.name}⌋ 的元数据`)
+        H.action('exif', img.path).then(data=>{
+            if(!data)  return M.info(`读取不到 ⌈${img.name}⌋ 的元数据`)
 
             const height = window.innerHeight - 100
             const width = window.innerWidth<720?window.innerWidth:720
-            dialog.create({
+            M.dialog({
                 title:`⌈${img.name}⌋ 的元数据`,
                 showIcon:false,
-                style:{width:`${width}px`, height:`${height}px` },
+                style:{width:`${width}px`, height:`${height+40}px` },
                 content: ()=>h(Exif, { data, height: `${height-80}px` })
             })
         })
