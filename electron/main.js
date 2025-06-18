@@ -2,9 +2,7 @@ const { join } = require('node:path')
 const { app, protocol, BrowserWindow, Menu, globalShortcut } = require('electron')
 const registerHandler = require('./handler')
 
-//不提示安全信息
-process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
-protocol.registerSchemesAsPrivileged([ { scheme: 'app', privileges: { secure: true, standard: true } } ])
+const handleCli = require('./cli')
 
 const initKeyShortcut = ()=>{
     /**
@@ -63,27 +61,39 @@ async function createWindow() {
         app.setAppUserModelId("OPEN-IMAGE-TINY/开源图片压缩工具")
 }
 
+if(process.argv.length > (app.isPackaged?1:2)){
+    (async ()=>{
+        //处理命令行
+        await handleCli()
+        setTimeout(app.quit, 200)
+    })();
+}
+else{
+    //不提示安全信息
+    process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
+    protocol.registerSchemesAsPrivileged([ { scheme: 'app', privileges: { secure: true, standard: true } } ])
 
-/**
- * Disable Hardware Acceleration for more power-save
- */
-app.disableHardwareAcceleration()
-app.on('window-all-closed', () => {
-    console.debug(`所有窗口均关闭，即将退出程序...`)
-    setTimeout(app.quit, 1000)
-    // if (process.platform !== 'darwin'){
-    // }
-})
-app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) restoreOrCreateWindow()})
-/**
- * 系统开启第二个实例时触发，通常用于伪协议响应
- */
-app.on('second-instance', restoreOrCreateWindow)
+    /**
+     * Disable Hardware Acceleration for more power-save
+     */
+    app.disableHardwareAcceleration()
+    app.on('window-all-closed', () => {
+        console.debug(`所有窗口均关闭，即将退出程序...`)
+        setTimeout(app.quit, 1000)
+        // if (process.platform !== 'darwin'){
+        // }
+    })
+    app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) restoreOrCreateWindow()})
+    /**
+     * 系统开启第二个实例时触发，通常用于伪协议响应
+     */
+    app.on('second-instance', restoreOrCreateWindow)
 
-app.whenReady().then(async ()=>{
-    registerHandler()
-    restoreOrCreateWindow()
-    initKeyShortcut()
+    app.whenReady().then(async ()=>{
+        registerHandler()
+        restoreOrCreateWindow()
+        initKeyShortcut()
 
-    console.debug(`程序启动完成，enjoy ^.^`)
-})
+        console.debug(`程序启动完成，enjoy ^.^`)
+    })
+}

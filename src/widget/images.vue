@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-    import { NFlex, NIcon, NPopover } from 'naive-ui'
+    import { NFlex, NIcon, NPopover, NTooltip, NTag, NSpin } from 'naive-ui'
     import { Trash, Database, SquareSplitVertical } from 'lucide-vue-next'
 
     import Tip from '@/widget/tip.vue'

@@ -10,7 +10,7 @@
                 <n-switch v-model:value="config.fit" />
             </n-form-item>
             <n-form-item v-if="config.fit==true" label="填充颜色">
-                <n-color-picker v-model:value="config.bgColor" :show-alpha="false" />
+                <n-color-picker v-model:value="config.color" :show-alpha="false" />
             </n-form-item>
             <n-button block type="primary" secondary :loading @click="toSplit">开始切割</n-button>
         </n-flex>
@@ -22,7 +22,7 @@
         img:{ type:Object }
     })
 
-    const config = reactive({ height:1000, fit:true, bgColor:"#ffffff" })
+    const config = reactive({ height:1000, fit:true, color:"#ffffff" })
     const loading = ref(false)
 
     const toSplit=()=>{

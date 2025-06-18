@@ -156,7 +156,7 @@ exports.readImgSize = async file=> {
  * @typedef {Object} SplitConfig - 切割配置
  * @property {Number} height - 高度
  * @property {Boolean} fit - 是否自动填充
- * @property {String} bgColor - 填充颜色
+ * @property {String} color - 填充颜色
  *
  * 垂直切割图片
  *
@@ -165,6 +165,9 @@ exports.readImgSize = async file=> {
  */
 exports.splitImageVertical = async (origin, config)=>{
     const { width, height } = await this.readImgSize(origin)
+    if(height <= config.height)
+        throw `切割高度不能大于图片原高度`
+
     config.fit ??= true
 
     const ext = path.extname(origin)
@@ -187,7 +190,7 @@ exports.splitImageVertical = async (origin, config)=>{
 
         //自动填充白色背景
         if(config.fit === true && config.height > curHeight){
-            chunk = chunk.extend({ top:0, bottom: config.height - curHeight, left:0, right:0, background: config.bgColor||"#ffffff" })
+            chunk = chunk.extend({ top:0, bottom: config.height - curHeight, left:0, right:0, background: config.color||"#ffffff" })
         }
 
         let outFile = path.join(outputDir, `切割-${i+1}${ext}`)
