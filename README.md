@@ -7,6 +7,8 @@
 * [Electron+Vue3+Rsbuild开发桌面应用](https://blog.csdn.net/ssrc0604hx/article/details/148164531)
 * [图片生成PDF文档](https://blog.csdn.net/ssrc0604hx/article/details/148425044)
 * [图片属性详解及读取解析元数据](https://blog.csdn.net/ssrc0604hx/article/details/148427409)
+* [按指定高度垂直切割图片](https://blog.csdn.net/ssrc0604hx/article/details/148655838)
+* [Electron应用配合 commander 提供命令行调用功能](https://blog.csdn.net/ssrc0604hx/article/details/148742140)
 
 **📷程序截图**
 

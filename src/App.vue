@@ -1,16 +1,15 @@
 <template>
     <div style="display: flex; flex-direction: column; height: 100vh;">
-        <n-space vertical style="padding:12px;">
+        <n-card :size hoverable class="text-center clickable" @click="toSelect">
+            <div><n-icon size="48" :depth="3" color="#0e7a0d"> <ImagePlus /> </n-icon></div>
+            <n-p depth="3" style="margin: 4px 0 0 0">支持的格式 {{ exts.join("、") }}，最多 {{ max }} 张图片</n-p>
+        </n-card>
+        <!-- <n-space vertical style="padding:12px;">
             <n-alert :bordered="false" type="success" closable>
                 <template #icon> <Info /> </template>
                 WebP 和 AVIF 是两种现代图像格式，目标都是减小文件大小、提升加载速度、同时保持较高画质。
             </n-alert>
-
-            <n-card :size hoverable class="text-center clickable" @click="toSelect">
-                <div><n-icon size="48" :depth="3"> <ImagePlus /> </n-icon></div>
-                <n-p depth="3" style="margin: 4px 0 0 0">支持的格式 {{ exts.join("、") }}，最多 {{ max }} 张图片</n-p>
-            </n-card>
-        </n-space>
+        </n-space> -->
         <div style="flex: 1;padding-left: 12px; padding-right: 12px;">
             <ImageList :size :images />
         </div>

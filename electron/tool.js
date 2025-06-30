@@ -155,6 +155,7 @@ exports.readImgSize = async file=> {
 /**
  * @typedef {Object} SplitConfig - 切割配置
  * @property {Number} height - 高度
+ * @property {String} mode - 比例模式：1:1,4:3,3:4,16:9,9:16
  * @property {Boolean} fit - 是否自动填充
  * @property {String} color - 填充颜色
  *
@@ -165,6 +166,17 @@ exports.readImgSize = async file=> {
  */
 exports.splitImageVertical = async (origin, config)=>{
     const { width, height } = await this.readImgSize(origin)
+    /*
+    2025-06-30 支持比例切割
+     */
+    if(!!config.mode){
+        let m = config.mode.match(/^([1-9][0-9]?):([1-9][0-9]?)$/)
+        if(m!=null){
+            let [ ratioW, ratioH ] = [parseInt(m[1]), parseInt(m[2])]
+            config.height = Math.floor(ratioH * width / ratioW)
+        }
+    }
+
     if(height <= config.height)
         throw `切割高度不能大于图片原高度`
 

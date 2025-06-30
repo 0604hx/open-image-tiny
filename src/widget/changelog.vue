@@ -2,7 +2,7 @@
     <n-drawer v-model:show="help" width="90%">
         <n-drawer-content title="🎉 变更日志" :closable="true" :body-content-style="{padding:'0px 24px'}">
             <div class="changelog">
-                <div class="version">25.6.30</div>
+                <div class="version">25.6.20</div>
                 <ul>
                     <li>新增<Tag>垂直切割</Tag>功能</li>
                     <li>支持<Tag>命令行</Tag>方式调用</li>
